@@ -23,6 +23,7 @@ public class PlayerMovement : MonoBehaviour
         float v = Input.GetAxis("Vertical");
 
         // ---------- Relative Camera Movement ----------
+
         Vector3 camForward  = cam.transform.forward;
         Vector3 camRight    = cam.transform.right;
         camForward.y        = 0;
@@ -32,9 +33,12 @@ public class PlayerMovement : MonoBehaviour
         
         Vector3 forwardRelativeMovementVector   = v * camForward;
         Vector3 rightRelativeMovmentVector      = h * camRight;
+
         // ---------- Relative Camera Movement ----------
 
         Vector3 inputVector = forwardRelativeMovementVector + rightRelativeMovmentVector;
+
+        animator.transform.forward = inputVector;
 
         movementVector = new Vector3(inputVector.x * moveSpeed  ,
                                      movementVector.y           ,
@@ -44,7 +48,14 @@ public class PlayerMovement : MonoBehaviour
         movementVector.y = Mathf.Clamp(movementVector.y, -14, 14);
 
         if (Input.GetButtonDown("Jump") && playerController.isGrounded)
+        {
             movementVector.y = jumpForce;
+            animator.SetBool("isJumping", true);
+        }
+        else if (playerController.isGrounded)
+        {
+            animator.SetBool("isJumping", false);
+        }
 
         if (h != 0 || v != 0)
             animator.SetBool("isRunning", true);
